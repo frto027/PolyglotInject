@@ -1,5 +1,9 @@
 #include "main.hpp"
+#include "PolyglotInject.hpp"
+#include "UnityEngine/zzzz__TextAsset_def.hpp"
 #include "assets.hpp"
+#include "beatsaber-hook/shared/utils/typedefs-string.hpp"
+#include "cordl_internals/unity-utils.hpp"
 #include "helpers.h"
 
 #include "scotland2/shared/modloader.h"
@@ -13,6 +17,12 @@
 #include "System/Collections/Generic/ICollection_1.hpp"
 #include "System/Collections/Generic/List_1.hpp"
 #include "System/Collections/Generic/IList_1.hpp"
+#include <cstdio>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <string_view>
+#include "PolyglotInject_internal.hpp"
 
 // Stores the ID and version of our mod, and is sent to the modloader upon startup
 static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
@@ -26,13 +36,6 @@ Configuration &getConfig() {
     return config;
 }
 
-void loadLocalizationFile() {
-    localizationString = new char[polyglot_inject_csv::getLength() + 1];
-    memcpy(localizationString, polyglot_inject_csv::getData(), polyglot_inject_csv::getLength());
-    localizationString[polyglot_inject_csv::getLength()] = '\0';
-    PaperLogger.info("Localization File Loaded, Length %lu", polyglot_inject_csv::getLength());
-}
-
 // Called at the early stages of game loading
 MOD_EXTERN_FUNC void setup(CModInfo *info) noexcept {
     *info = modInfo.to_c();
@@ -41,8 +44,6 @@ MOD_EXTERN_FUNC void setup(CModInfo *info) noexcept {
 
     // File logging
     Paper::Logger::RegisterFileContextId(PaperLogger.tag);
-
-    loadLocalizationFile();
 
     PaperLogger.info("Completed setup!");
 }
@@ -54,8 +55,53 @@ MAKE_HOOK_MATCH(LocalizationInstallerHook,
                 System::Collections::Generic::IList_1<UnityW<UnityEngine::TextAsset>> * assets, 
                 BGLib::AppFlow::Initialization::AsyncInstaller::IInstallerRegistry* registry) {
     PaperLogger.debug("%s triggered!", name());
-    assets->i___System__Collections__Generic__ICollection_1_T_()->Add(makeTextAsset(localizationString));
-    self->_mainPolyglotAsset->supportedLanguages->Add(BGLib::Polyglot::Language::Simplified_Chinese);
+    for(auto & ptr : PolyglotInject::pendingAssets){
+        auto asset = ptr->getAsset();
+        if(asset.has_value()){
+            assets->i___System__Collections__Generic__ICollection_1_T_()->Add(asset.value());
+        }
+    }
+
+    for(auto & language : PolyglotInject::pendingLanguages){
+        switch(language){
+            #define CASE(x) \
+                case PolyglotInject::LANG_##x: \
+                    self->_mainPolyglotAsset->supportedLanguages->Add(BGLib::Polyglot::Language::x);\
+                break;
+            CASE(English)
+            CASE(French)
+            CASE(Spanish)
+            CASE(German)
+            CASE(Italian)
+            CASE(Portuguese_Brazil)
+            CASE(Portuguese)
+            CASE(Russian)
+            CASE(Greek)
+            CASE(Turkish)
+            CASE(Danish)
+            CASE(Norwegian)
+            CASE(Swedish)
+            CASE(Dutch)
+            CASE(Polish)
+            CASE(Finnish)
+            CASE(Japanese)
+            CASE(Simplified_Chinese)
+            CASE(Traditional_Chinese)
+            CASE(Korean)
+            CASE(Czech)
+            CASE(Hungarian)
+            CASE(Romanian)
+            CASE(Thai)
+            CASE(Bulgarian)
+            CASE(Hebrew)
+            CASE(Arabic)
+            CASE(Bosnian)
+            #undef CASE
+        }
+    }
+    PolyglotInject::pendingAssets.clear();
+    PolyglotInject::pendingLanguages.clear();
+
     LocalizationInstallerHook(self, assets, registry);
 }
 
@@ -67,4 +113,7 @@ MOD_EXTERN_FUNC void late_load() noexcept {
     // Install our hooks
     INSTALL_HOOK(PaperLogger, LocalizationInstallerHook)
     PaperLogger.info("Installed all hooks!");
+
+    PolyglotInject::AddGameLanguageBeforeInstall(PolyglotInject::LANG_Simplified_Chinese);
+    PolyglotInject::AddTextBeforeInstall(polyglot_inject_csv::getData(), polyglot_inject_csv::getLength());
 }
