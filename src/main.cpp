@@ -1,32 +1,27 @@
+#include "_config.hpp"
+
 #include "main.hpp"
 #include "PolyglotInject.hpp"
-#include "UnityEngine/zzzz__TextAsset_def.hpp"
 #include "assets.hpp"
-#include "beatsaber-hook/shared/utils/typedefs-string.hpp"
 #include "cordl_internals/unity-utils.hpp"
-#include "helpers.h"
 
 #include "scotland2/shared/modloader.h"
+
+#include "UnityEngine/TextAsset.hpp"
 
 #include "BGLib/Polyglot/LocalizationImporter.hpp"
 #include "BGLib/Polyglot/Localization.hpp"
 #include "BGLib/Polyglot/LocalizationAsset.hpp"
 #include "BGLib/Polyglot/LocalizationAsyncInstaller.hpp"
 #include "BGLib/AppFlow/Initialization/AsyncInstaller.hpp"
-#include "GlobalNamespace/MainSystemInit.hpp"
 #include "System/Collections/Generic/ICollection_1.hpp"
 #include "System/Collections/Generic/List_1.hpp"
 #include "System/Collections/Generic/IList_1.hpp"
-#include <cstdio>
-#include <filesystem>
-#include <fstream>
-#include <sstream>
 #include <string_view>
 #include "PolyglotInject_internal.hpp"
 
 // Stores the ID and version of our mod, and is sent to the modloader upon startup
 static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
-static char *localizationString;
 
 // Loads the config from disk using our modInfo, then returns it for use
 // other config tools such as config-utils don't use this config, so it can be

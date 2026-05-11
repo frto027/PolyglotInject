@@ -1,5 +1,4 @@
 #pragma once
-#include "BGLib/Polyglot/zzzz__Language_def.hpp"
 #include "PolyglotInject.hpp"
 #include "UnityEngine/TextAsset.hpp"
 #include <memory>

@@ -1,7 +1,8 @@
+#define POLYGLOT_INJECT_MAIN_MOD
 #include "PolyglotInject.hpp"
+
 #include "PolyglotInject_internal.hpp"
 #include "beatsaber-hook/shared/utils/utils-functions.h"
-#include "main.hpp"
 #include <memory>
 #include <vector>
 
