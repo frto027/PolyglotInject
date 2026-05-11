@@ -94,9 +94,9 @@ MAKE_HOOK_MATCH(LocalizationInstallerHook,
             #undef CASE
         }
     }
+    PolyglotInject::assetsAlreadyInstalled = true;
     PolyglotInject::pendingAssets.clear();
     PolyglotInject::pendingLanguages.clear();
-
     LocalizationInstallerHook(self, assets, registry);
 }
 
