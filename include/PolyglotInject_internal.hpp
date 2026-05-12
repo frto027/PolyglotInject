@@ -21,17 +21,16 @@ namespace PolyglotInject {
 
     class PendingTextAssetByReference : public PendingTextAsset{
     private:
-        const uint8_t * text;
-        const size_t size;
+        std::string_view text;
     public:
-        PendingTextAssetByReference(const uint8_t * text, size_t size): text(text), size(size) {}
+        PendingTextAssetByReference(const uint8_t * text, size_t size): text((const char*)text, size) {}
         std::optional<UnityW<UnityEngine::TextAsset>> getAsset() override {
-            return UnityEngine::TextAsset::New_ctor(std::move(std::string_view((const char*)text, size)));
+            return UnityEngine::TextAsset::New_ctor(std::move(text));
         }
     };
     class PendingTextAssetByValue : public PendingTextAsset{
     private:
-        std::string_view text;
+        std::string text;
     public:
         PendingTextAssetByValue(const uint8_t * text, size_t size): text((const char*)text, size) {}
         std::optional<UnityW<UnityEngine::TextAsset>> getAsset() override {
