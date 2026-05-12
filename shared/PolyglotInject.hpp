@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BGLib/Polyglot/Localization.hpp"
-#include "beatsaber-hook/shared/utils/typedefs-string.hpp"
+#include "beatsaber-hook/shared/utils/typedefs-string.hpp" // for ::StringW
 #include <cstdint>
 #include <string>
 
@@ -14,34 +14,34 @@
 namespace PolyglotInject {
 
     enum Language{
-        LANG_English,
-        LANG_French,
-        LANG_Spanish,
-        LANG_German,
-        LANG_Italian,
-        LANG_Portuguese_Brazil,
-        LANG_Portuguese,
-        LANG_Russian,
-        LANG_Greek,
-        LANG_Turkish,
-        LANG_Danish,
-        LANG_Norwegian,
-        LANG_Swedish,
-        LANG_Dutch,
-        LANG_Polish,
-        LANG_Finnish,
-        LANG_Japanese,
-        LANG_Simplified_Chinese,
-        LANG_Traditional_Chinese,
-        LANG_Korean,
-        LANG_Czech,
-        LANG_Hungarian,
-        LANG_Romanian,
-        LANG_Thai,
-        LANG_Bulgarian,
-        LANG_Hebrew,
-        LANG_Arabic,
-        LANG_Bosnian,
+        L_English,
+        L_French,
+        L_Spanish,
+        L_German,
+        L_Italian,
+        L_Portuguese_Brazil,
+        L_Portuguese,
+        L_Russian,
+        L_Greek,
+        L_Turkish,
+        L_Danish,
+        L_Norwegian,
+        L_Swedish,
+        L_Dutch,
+        L_Polish,
+        L_Finnish,
+        L_Japanese,
+        L_Simplified_Chinese,
+        L_Traditional_Chinese,
+        L_Korean,
+        L_Czech,
+        L_Hungarian,
+        L_Romanian,
+        L_Thai,
+        L_Bulgarian,
+        L_Hebrew,
+        L_Arabic,
+        L_Bosnian,
     };
 
     // it's okay to add one language multiple times.
@@ -59,5 +59,4 @@ namespace PolyglotInject {
     inline std::string GetStr(::StringW key){
         return il2cpp_utils::detail::to_string(Get(key));
     }
-
 }

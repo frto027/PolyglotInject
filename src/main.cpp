@@ -19,7 +19,7 @@
 #include "System/Collections/Generic/IList_1.hpp"
 #include <string_view>
 #include "PolyglotInject_internal.hpp"
-
+#include "StringResourceHelper.hpp"
 // Stores the ID and version of our mod, and is sent to the modloader upon startup
 static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 
@@ -60,7 +60,7 @@ MAKE_HOOK_MATCH(LocalizationInstallerHook,
     for(auto & language : PolyglotInject::pendingLanguages){
         switch(language){
             #define CASE(x) \
-                case PolyglotInject::LANG_##x: \
+                case PolyglotInject::L_##x: \
                     self->_mainPolyglotAsset->supportedLanguages->Add(BGLib::Polyglot::Language::x);\
                 break;
             CASE(English)
@@ -109,6 +109,18 @@ MOD_EXTERN_FUNC void late_load() noexcept {
     INSTALL_HOOK(PaperLogger, LocalizationInstallerHook)
     PaperLogger.info("Installed all hooks!");
 
-    PolyglotInject::AddGameLanguageBeforeInstall(PolyglotInject::LANG_Simplified_Chinese);
+
+    ///////////////////////////
+    // do some test here...
+    ///////////////////////////
+
+    PolyglotInject::AddGameLanguageBeforeInstall(PolyglotInject::L_Simplified_Chinese);
     PolyglotInject::AddTextBeforeInstall(polyglot_inject_csv::getData(), polyglot_inject_csv::getLength());
+
+    PolyglotInject::StringResourceBuilder()
+        .forLanguage(PolyglotInject::L_Simplified_Chinese)
+        .p("KEY1", "VALUE1")
+        .p("KEY2", "VALUE2")
+        .submit(); 
+    auto s = PolyglotInject::FormatKey("abc",2llu,3,4,6);
 }
